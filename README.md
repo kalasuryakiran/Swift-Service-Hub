@@ -1,73 +1,193 @@
-# Welcome to your Lovable project
+# 🚀 Swift Service Hub
 
-## Project info
+![Status](https://img.shields.io/badge/status-active-success.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+### Smart Service Request Portal with AI-powered Automation
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🧠 Overview
 
-**Use Lovable**
+**Swift Service Hub** is a lightweight, intelligent service request management system designed for universities and enterprise environments.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+It enables users to raise service requests (IT, Admin, Facilities) and allows support teams to efficiently track, manage, and resolve them. The system enhances traditional helpdesk workflows using **AI-driven automation** (simulated) to improve speed, accuracy, and user experience.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🎯 Problem Statement
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+In many organizations, service requests are:
+*   Scattered across emails or manual systems
+*   Difficult to track
+*   Lacking proper prioritization
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+This leads to:
+*   Delayed resolutions
+*   Poor visibility
+*   Inefficient workflows
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 💡 Solution
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Swift Service Hub provides:
+*   A centralized platform for raising and managing requests
+*   Automated categorization and prioritization using AI logic
+*   Real-time status tracking
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## ✨ Features
+
+### ✅ Core Features
+*   📝 Create Service Requests
+*   📋 View Requests with Filters (Category, Status, Priority)
+*   🔄 Update Status (Open → In Progress → Resolved)
+*   🔐 Role-Based Authentication (User/Admin)
+
+### 🤖 AI-Powered Features
+*   **Auto Category Detection**: Automatically assigns category (IT/Admin/Facilities) based on user input.
+*   **Smart Priority Detection**: Detects urgency and assigns priority (High/Medium).
+*   **Smart Suggestions**: Provides instant suggestions to resolve common issues.
+
+---
+
+## 🏗️ Architecture
+
+### 🔹 Type
+Modular Monolith (Frontend + Backend + DB)
+
+### 🔹 Flow
+Frontend (React/Vite) → API (Node/Express) → Database (SQLite)
+
+### 🔹 Components
+*   **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
+*   **Backend**: Node.js + Express
+*   **Database**: SQLite (File-based persistence)
+*   **AI Logic**: Rule-based keyword detection (Client-side)
+
+---
+
+## � Workflow
+
+```mermaid
+graph TD
+    A[User Login] -->| Authenticates | B[Create Request]
+    B -->| Submits Form | C[AI detects Category & Priority]
+    C -->| Auto-Analysis | D[Request stored in DB]
+    D -->| Notification | E[Admin views requests]
+    E -->| Review | F[Admin updates status]
+    F -->| Real-time Update | G[User tracks progress]
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## �🔌 API Endpoints
 
-**Use GitHub Codespaces**
+### 🔐 Authentication
+*   `POST /api/auth/login` - Authenticate user
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 📝 Requests
+*   `POST /api/requests` → Create request
+*   `GET /api/requests` → Get all requests
+*   `PATCH /api/requests/:id` → Update status
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 🗄️ Data Model
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```json
+{
+  "id": "REQ-SEED001",
+  "title": "WiFi Issue",
+  "description": "WiFi not working",
+  "category": "IT",
+  "priority": "High",
+  "status": "Open",
+  "name": "User Name",
+  "email": "user@example.com",
+  "suggestion": "Try restarting...",
+  "createdAt": "2023-10-27T10:00:00.000Z"
+}
+```
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 🔐 Credentials
 
-## Can I connect a custom domain to my Lovable project?
+Use these pre-configured accounts to access the portal:
 
-Yes, you can!
+### 👨‍💼 Admin
+*   **Username**: `admin`
+*   **Password**: `admin123`
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### 👤 User
+*   **Username**: `john`
+*   **Password**: `john123`
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone <YOUR_GIT_URL>
+cd swift-service-hub
+```
+
+### 2. Install Dependencies
+```bash
+# Frontend
+npm install
+
+# Backend
+cd server
+npm install
+```
+
+### 3. Initialize Database
+```bash
+cd server
+npm run seed
+```
+
+### 4. Run the Application
+You need two terminals:
+
+**Terminal 1 (Backend):**
+```bash
+cd server
+npm start
+```
+> Runs on http://localhost:3000
+
+**Terminal 2 (Frontend):**
+```bash
+npm run dev
+```
+> Runs on http://localhost:8080
+
+---
+
+## 📊 Optional Enhancements
+*   Dashboard with analytics
+*   Real-time updates
+*   Email notifications
+*   Database integration (PostgreSQL)
+
+---
+
+## ⚡ Innovation & Differentiation
+Unlike traditional service request systems, this project introduces:
+*   AI-based automation for categorization and prioritization
+*   Smart suggestions to reduce support workload
+*   Clean and minimal user experience
+
+---
+
+
+
+## 👨‍💻 Author
+**Surya Kiran**
+Aspiring AI Product Manager | Fullstack Developer

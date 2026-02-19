@@ -1,59 +1,26 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ServiceRequest, Status } from '@/types';
 import { detectCategory, detectPriority, getSuggestion, generateId } from '@/utils/aiEngine';
 
-// Sample seed data
-const SEED_DATA: ServiceRequest[] = [
-  {
-    id: 'REQ-SEED001',
-    title: 'WiFi not connecting in Block B',
-    description: 'The wifi is not working since morning. Multiple users are affected. Urgent fix needed.',
-    category: 'IT',
-    priority: 'High',
-    status: 'In Progress',
-    name: 'Alice Johnson',
-    email: 'alice@example.com',
-    suggestion: 'Try restarting your router and reconnecting. If persistent, check if others are affected.',
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-  },
-  {
-    id: 'REQ-SEED002',
-    title: 'AC not working in Room 204',
-    description: 'The air conditioning unit in conference room 204 is broken. It is very hot inside.',
-    category: 'Facilities',
-    priority: 'Medium',
-    status: 'Open',
-    name: 'Bob Martinez',
-    email: 'bob@example.com',
-    suggestion: 'Check if the AC settings have been adjusted. Report to Facilities with your room/floor number.',
-    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-  {
-    id: 'REQ-SEED003',
-    title: 'Salary not credited for December',
-    description: 'My December salary has not been credited yet. Please look into it.',
-    category: 'Admin',
-    priority: 'High',
-    status: 'Resolved',
-    name: 'Carol White',
-    email: 'carol@example.com',
-    suggestion: 'Verify your attendance records. Raise ticket with specific month/details for faster resolution.',
-    createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-  },
-];
-
 interface RequestContextType {
   requests: ServiceRequest[];
-  addRequest: (data: { title: string; description: string; name: string; email: string }) => ServiceRequest;
-  updateStatus: (id: string, status: Status) => void;
+  addRequest: (data: { title: string; description: string; name: string; email: string }) => Promise<ServiceRequest>;
+  updateStatus: (id: string, status: Status) => Promise<void>;
 }
 
 const RequestContext = createContext<RequestContextType | null>(null);
 
 export function RequestProvider({ children }: { children: React.ReactNode }) {
-  const [requests, setRequests] = useState<ServiceRequest[]>(SEED_DATA);
+  const [requests, setRequests] = useState<ServiceRequest[]>([]);
 
-  const addRequest = (data: { title: string; description: string; name: string; email: string }): ServiceRequest => {
+  useEffect(() => {
+    fetch('/api/requests')
+      .then(res => res.json())
+      .then(data => setRequests(data))
+      .catch(err => console.error('Failed to fetch requests', err));
+  }, []);
+
+  const addRequest = async (data: { title: string; description: string; name: string; email: string }): Promise<ServiceRequest> => {
     const text = `${data.title} ${data.description}`;
     const newRequest: ServiceRequest = {
       id: generateId(),
@@ -64,12 +31,38 @@ export function RequestProvider({ children }: { children: React.ReactNode }) {
       suggestion: getSuggestion(text),
       createdAt: new Date().toISOString(),
     };
-    setRequests(prev => [newRequest, ...prev]);
-    return newRequest;
+
+    try {
+      const response = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newRequest),
+      });
+
+      if (response.ok) {
+        setRequests(prev => [newRequest, ...prev]);
+        return newRequest;
+      } else {
+        throw new Error('Failed to create request');
+      }
+    } catch (error) {
+      console.error('Error adding request:', error);
+      throw error;
+    }
   };
 
-  const updateStatus = (id: string, status: Status) => {
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r));
+  const updateStatus = async (id: string, status: Status) => {
+    try {
+      setRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r)); // Optimistic update
+      await fetch(`/api/requests/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+    } catch (error) {
+      console.error('Error updating status:', error);
+      // Revert if needed (not implemented here for simplicity)
+    }
   };
 
   return (

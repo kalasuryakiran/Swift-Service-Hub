@@ -37,9 +37,9 @@ export default function RequestForm({ onClose, onCreated }: Props) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const req = addRequest(form);
+    const req = await addRequest(form);
     setSubmitted(true);
     setTimeout(() => onCreated(req), 800);
   };

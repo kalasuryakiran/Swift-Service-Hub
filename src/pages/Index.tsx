@@ -24,32 +24,32 @@ function PortalApp() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Nav */}
-      <header className="bg-card border-b border-border sticky top-0 z-20">
+      <header className="bg-sidebar border-b border-sidebar-border sticky top-0 z-20 shadow-md">
         <div className="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Monitor className="w-4 h-4 text-primary-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center shadow-lg shadow-sidebar-primary/20">
+              <Monitor className="w-4 h-4 text-sidebar-primary-foreground" />
             </div>
             <div>
-              <span className="font-bold text-foreground text-sm">ServicePortal</span>
-              <span className={`ml-2 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${user.role === 'admin' ? 'badge-progress' : 'badge-open'}`}>
+              <span className="font-bold text-sidebar-foreground text-sm tracking-tight">ServicePortal</span>
+              <span className={`ml-2 text-[10px] font-semibold px-1.5 py-0.5 rounded-full border ${user.role === 'admin' ? 'bg-sidebar-accent text-sidebar-foreground border-sidebar-border' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
                 {user.role}
               </span>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground hidden sm:block">
-              Hi, <span className="font-medium text-foreground">{user.displayName}</span>
+            <span className="text-sm text-sidebar-foreground/80 hidden sm:block">
+              Hi, <span className="font-medium text-sidebar-foreground">{user.displayName}</span>
             </span>
             <button
               onClick={() => setShowForm(true)}
-              className="flex items-center gap-1.5 text-sm font-semibold bg-primary text-primary-foreground px-3.5 py-2 rounded-lg hover:opacity-90 active:scale-[0.98] transition"
+              className="flex items-center gap-1.5 text-sm font-semibold bg-sidebar-primary text-sidebar-primary-foreground px-3.5 py-2 rounded-lg hover:bg-sidebar-primary/90 active:scale-[0.98] transition shadow-lg shadow-sidebar-primary/20"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">New Request</span>
             </button>
-            <button onClick={logout} className="p-2 rounded-lg hover:bg-muted transition" title="Sign out">
-              <LogOut className="w-4 h-4 text-muted-foreground" />
+            <button onClick={logout} className="p-2 rounded-lg hover:bg-sidebar-accent text-sidebar-foreground/70 hover:text-sidebar-foreground transition" title="Sign out">
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>

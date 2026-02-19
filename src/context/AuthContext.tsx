@@ -1,16 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
-import { User, Role } from '@/types';
-
-// Hardcoded users
-const USERS: Record<string, { password: string; role: Role; displayName: string }> = {
-  admin: { password: 'admin123', role: 'admin', displayName: 'Admin User' },
-  john: { password: 'john123', role: 'user', displayName: 'John Doe' },
-  sarah: { password: 'sarah123', role: 'user', displayName: 'Sarah Smith' },
-};
+import { User } from '@/types';
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -19,13 +12,24 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (username: string, password: string): boolean => {
-    const record = USERS[username.toLowerCase()];
-    if (record && record.password === password) {
-      setUser({ username, role: record.role, displayName: record.displayName });
-      return true;
+  const login = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => setUser(null);

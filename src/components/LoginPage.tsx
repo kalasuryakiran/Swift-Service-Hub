@@ -9,15 +9,19 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setTimeout(() => {
-      const ok = login(username, password);
+
+    try {
+      const ok = await login(username, password);
       if (!ok) setError('Invalid username or password.');
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   const fillDemo = (u: string, p: string) => { setUsername(u); setPassword(p); setError(''); };
