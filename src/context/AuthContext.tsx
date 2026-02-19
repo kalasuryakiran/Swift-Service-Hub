@@ -4,6 +4,7 @@ import { User } from '@/types';
 interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<boolean>;
+  register: (username: string, password: string, displayName: string, role?: 'user' | 'admin') => Promise<boolean>;
   logout: () => void;
 }
 
@@ -32,9 +33,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const register = async (username: string, password: string, displayName: string, role: 'user' | 'admin' = 'user'): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, displayName, role }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Optional: Auto-login after register? Or just return true to redirect to login.
+        // Let's just return true and let the user login.
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Registration error:', error);
+      return false;
+    }
+  };
+
   const logout = () => setUser(null);
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, login, register, logout }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

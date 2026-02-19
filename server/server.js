@@ -46,11 +46,38 @@ let db;
 
 // Routes
 
+
+// Register
+app.post('/api/auth/register', async (req, res) => {
+  const { username, password, displayName, role = 'user' } = req.body;
+
+  if (!username || !password || !displayName) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    const existingUser = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+    if (existingUser) {
+      return res.status(409).json({ error: 'Username already exists' });
+    }
+
+    await db.run(
+      'INSERT INTO users (username, password, role, displayName) VALUES (?, ?, ?, ?)',
+      [username, password, role, displayName]
+    );
+
+    const newUser = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Login
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   const user = await db.get('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
-  
+
   if (user) {
     res.json(user);
   } else {
@@ -67,7 +94,7 @@ app.get('/api/requests', async (req, res) => {
 // Create request
 app.post('/api/requests', async (req, res) => {
   const { id, title, description, category, priority, status, name, email, suggestion, createdAt } = req.body;
-  
+
   try {
     await db.run(
       `INSERT INTO requests (id, title, description, category, priority, status, name, email, suggestion, createdAt) 
@@ -84,7 +111,7 @@ app.post('/api/requests', async (req, res) => {
 app.patch('/api/requests/:id', async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  
+
   try {
     await db.run('UPDATE requests SET status = ? WHERE id = ?', [status, id]);
     res.json({ message: 'Status updated' });

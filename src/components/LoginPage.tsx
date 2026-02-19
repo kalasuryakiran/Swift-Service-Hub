@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { Link } from 'react-router-dom';
 import { Monitor, ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
@@ -78,6 +79,12 @@ export default function LoginPage() {
             >
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
+            <div className="text-center text-sm text-muted-foreground mt-4">
+              Don't have an account?{' '}
+              <Link to="/signup" className="text-primary hover:underline font-medium">
+                Sign Up
+              </Link>
+            </div>
           </form>
 
           {/* Demo credentials */}

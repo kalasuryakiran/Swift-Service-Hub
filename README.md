@@ -186,8 +186,6 @@ Unlike traditional service request systems, this project introduces:
 
 ---
 
-
-
 ## 👨‍💻 Author
 **Surya Kiran**
 Aspiring AI Product Manager | Fullstack Developer
